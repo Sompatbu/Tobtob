@@ -14,7 +14,8 @@
         appFiles:[
             'src/GameLayer.js' ,
 			'src/Note.js',
-			'src/InFrame.js'	//add your own files in order here
+			'src/InFrame.js',
+			'src/Judgement.js'//add your own files in order here
         ]
     };
 

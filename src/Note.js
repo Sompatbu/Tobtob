@@ -3,7 +3,9 @@ var Note = cc.Sprite.extend({
         this._super();
         this.initWithFile( 'images/SingleNote.png' );
 		this.gameLayer = layer;
-		this.mark = 0;
+		this.noteScore = 0;
+		this.isHited = false;
+		this.judge = new Judgement();
 		if(dir == 1)
 		{
 			this.direction = Note.DIR.UP;
@@ -20,110 +22,109 @@ var Note = cc.Sprite.extend({
 		{
 			this.direction = Note.DIR.LEFT;
 		}
-		
     },
 	update: function( dt ) {
 	var pos = this.getPosition();
 	
 	if(this.direction == Note.DIR.UP)
 	{
-		if ( pos.y < screenHeight-20) {
-	    this.setPosition( new cc.Point( pos.x, pos.y + 3) );
-		} else {
-	    this.gameLayer.removeChild(this);
-		this.gameLayer.combo = 0;
-		this.gameLayer.comboLabel.setString('Combo: 0');
-		this.gameLayer.notePop++;
-		this.gameLayer.noteSet.shift();
-	}
+		if ( pos.y < screenHeight-30) 
+		{
+			this.setPosition( new cc.Point( pos.x, pos.y + 4) );
+		} 
+		else 
+		{
+			this.removeNonActiveNote();
+		}
 	}
 	else if(this.direction == Note.DIR.RIGHT)
 	{
-		if ( pos.x < screenWidth-120 ){
-	    this.setPosition( new cc.Point( pos.x + 3, pos.y) );
-		} else {
-	    this.gameLayer.removeChild(this);
-		this.gameLayer.combo = 0;
-		this.gameLayer.comboLabel.setString('Combo: 0');
-		this.gameLayer.notePop++;
-		this.gameLayer.noteSet.shift();
-	}
+		if ( pos.x < screenWidth-170 )
+		{
+			this.setPosition( new cc.Point( pos.x + 4, pos.y) );
+		} 
+		else 
+		{
+			this.removeNonActiveNote();
+		}
 	}
 	else if(this.direction == Note.DIR.DOWN)
 	{
-		if ( pos.y > 20) {
-	    this.setPosition( new cc.Point( pos.x, pos.y - 3) );
-		} else {
-	    this.gameLayer.removeChild(this);
-		this.gameLayer.combo = 0;
-		this.gameLayer.comboLabel.setString('Combo: 0');
-		this.gameLayer.notePop++;
-		this.gameLayer.noteSet.shift();
-	}
+		if ( pos.y > 30) 
+		{
+			this.setPosition( new cc.Point( pos.x, pos.y - 4) );
+		} 
+		else 
+		{
+			this.removeNonActiveNote();
+		}
 	}
 	else if(this.direction == Note.DIR.LEFT)
 	{
-		if ( pos.x > 120) {
-	    this.setPosition( new cc.Point( pos.x - 3, pos.y) );
-		} else {
-	    this.gameLayer.removeChild(this);
+		if ( pos.x > 170) 
+		{
+			this.setPosition( new cc.Point( pos.x - 4, pos.y) );
+		} 
+		else 
+		{
+			this.removeNonActiveNote();
+		}
+	}
+},
+	removeNonActiveNote: function() {
+		this.gameLayer.removeChild(this);
 		this.gameLayer.combo = 0;
 		this.gameLayer.comboLabel.setString('Combo: 0');
-		this.gameLayer.notePop++;
+		this.gameLayer.noteCount--;
 		this.gameLayer.noteSet.shift();
-	}
-	}
-	
-	
 },
 	noteCheck: function(button)
 	{
 		var pos = this.getPosition();
-		if(button == 1 & pos.y < screenHeight-20 && pos.y > screenHeight -70 && this.mark == 0)
+		if(button == 1 && pos.y < screenHeight-30 && pos.y > screenHeight -80 && this.isHited == false)
 		{
 			this.gameLayer.removeChild(this);
-			this.gameLayer.score += 100;
+			this.gameLayer.score += this.judge.scoring(pos.y - (screenHeight - 80));
 			this.gameLayer.combo++;
-			this.mark = 1;
+			this.isHited = 1;
 			this.gameLayer.scoreLabel.setString('Score: '+this.gameLayer.score);
 			this.gameLayer.comboLabel.setString('Combo: '+this.gameLayer.combo);
-			this.gameLayer.notePop++;
+			this.gameLayer.noteCount--;
 			this.gameLayer.noteSet.shift();
 		}
-		else if(button == 2 & pos.x < screenWidth - 120 && pos.x > screenWidth - 170 && this.mark == 0)
+		else if(button == 2 && pos.x < screenWidth - 170 && pos.x > screenWidth - 220 && this.isHited == false)
 		{
 			this.gameLayer.removeChild(this);
-			this.gameLayer.score += 100;
+			this.gameLayer.score += this.judge.scoring(pos.x - (screenWidth - 220));
 			this.gameLayer.combo++;
-			this.mark = 1;
+			this.isHited = 1;
 			this.gameLayer.scoreLabel.setString('Score: '+this.gameLayer.score);
 			this.gameLayer.comboLabel.setString('Combo: '+this.gameLayer.combo);
-			this.gameLayer.notePop++;
+			this.gameLayer.noteCount--;
 			this.gameLayer.noteSet.shift();
 		}
-		else if(button == 3 & pos.y > 20 && pos.y < 70 && this.mark == 0)
+		else if(button == 3 && pos.y > 30 && pos.y < 80 && this.isHited == false)
 		{
 			this.gameLayer.removeChild(this);
-			this.gameLayer.score += 100;
+			this.gameLayer.score += this.judge.scoring(pos.y - 30);
 			this.gameLayer.combo++;
-			this.mark = 1;
+			this.isHited = 1;
 			this.gameLayer.scoreLabel.setString('Score: '+this.gameLayer.score);
 			this.gameLayer.comboLabel.setString('Combo: '+this.gameLayer.combo);
-			this.gameLayer.notePop++;
+			this.gameLayer.noteCount--;
 			this.gameLayer.noteSet.shift();
 		}
-		else if(button == 4 & pos.x > 120 && pos.x < 170 && this.mark == 0)
+		else if(button == 4 && pos.x > 170 && pos.x < 220 && this.isHited == false)
 		{
 			this.gameLayer.removeChild(this);
-			this.gameLayer.score += 100;
+			this.gameLayer.score += this.judge.scoring(pos.x -170);
 			this.gameLayer.combo++;
-			this.mark = 1;
+			this.isHited = 1;
 			this.gameLayer.scoreLabel.setString('Score: '+this.gameLayer.score);
 			this.gameLayer.comboLabel.setString('Combo: '+this.gameLayer.combo);
-			this.gameLayer.notePop++;
+			this.gameLayer.noteCount--;
 			this.gameLayer.noteSet.shift();
 		}
-		
 	}
 });
 Note.DIR = {

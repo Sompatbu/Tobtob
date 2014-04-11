@@ -5,9 +5,5 @@ var InFrame = cc.Sprite.extend({
     },
 	update: function( dt ) {
 	var pos = this.getPosition();
-	
-	
-	
-	
 }});
 
