@@ -125,7 +125,12 @@ var Note = cc.Sprite.extend({
 			this.gameLayer.noteCount--;
 			this.gameLayer.noteSet.shift();
 		}
+	},
+	isInActiveArea: function()
+	{
+		
 	}
+	
 });
 Note.DIR = {
     UP: 1,

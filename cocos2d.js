@@ -15,7 +15,8 @@
             'src/GameLayer.js' ,
 			'src/Note.js',
 			'src/InFrame.js',
-			'src/Judgement.js'//add your own files in order here
+			'src/Judgement.js',
+			'src/Resource.js'//add your own files in order here
         ]
     };
 
