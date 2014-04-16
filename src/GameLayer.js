@@ -12,6 +12,19 @@ var GameLayer = cc.LayerColor.extend({
 		this.comboLabel = cc.LabelTTF.create( 'Combo: 0', 'Arial', 30 );
 		this.comboLabel.setPosition( new cc.Point( 925, 650 ) );
 		this.addChild(this.comboLabel);
+		this.judge = [];
+		this.judge.push(new Judgement());
+		this.judge[0].setPosition( new cc.Point( 512, 740) );
+		this.addChild(this.judge[0]);
+		this.judge.push(new Judgement());
+		this.judge[1].setPosition( new cc.Point( 860, 400) );
+		this.addChild(this.judge[1]);
+		this.judge.push(new Judgement());
+		this.judge[2].setPosition( new cc.Point( 512, 30) );
+		this.addChild(this.judge[2]);
+		this.judge.push(new Judgement());
+		this.judge[3].setPosition( new cc.Point( 170, 400) );
+		this.addChild(this.judge[3]);
 		this.noteSet = [];
 		this.noteCount = 0;
 		this.notePop = 0;
@@ -20,7 +33,7 @@ var GameLayer = cc.LayerColor.extend({
 		this.timer = 0;
 		this.noteRoomCount = 0;
 		this.noteDir = 1;
-		this.note = new Note(this, 1);
+		this.note = new Note(this, 1, this.judge[0]);
 		this.note.setPosition( new cc.Point( 512, 384 ) );
 		this.noteSet.push(this.note);
 		this.addChild(this.noteSet[this.noteCount]);
@@ -51,8 +64,9 @@ var GameLayer = cc.LayerColor.extend({
 		this.timer++;
 		if(this.timer == 30 && this.noteRoomCount < 330)
 		{
-			this.noteDir = Math.round(Math.random()*4+1);
-			this.note = new Note(this, this.noteDir);
+			this.noteDir = 1+Math.round(Math.random()*3);
+			this.note = new Note(this, this.noteDir, this.judge[this.noteDir-1]);
+			console.log('Show: ' + this.noteDir);
 			this.note.setPosition( new cc.Point( 512, 384 ) );
 			this.noteSet.push(this.note);
 			this.addChild(this.noteSet[this.noteCount+1]);

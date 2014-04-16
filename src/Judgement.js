@@ -10,10 +10,12 @@ var Judgement = cc.Sprite.extend({
 		if(range < 15 || range > 35)
 		{
 			this.score = 50;
+			this.initWithFile( 'images/GreatJudge.png' );
 		}
 		else
 		{
 			this.score = 100;
+			this.initWithFile( 'images/PerfectJudge.png' );
 		}
 		return this.score;
 	}
