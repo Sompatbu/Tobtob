@@ -5,7 +5,11 @@ var g_resources = [
 	{src: 'images/PerfectJudge.png' },
 	{src: 'images/GreatJudge.png' },
 	{src: 'images/MissJudge.png' },
+	{src: 'images/EmptyJudge.png' },
+	{src: 'images/Background.jpg'},
+	{src: 'images/ScoreBg.png'},
     
 	//song
-	{src: 'Songs/Before.mp3' }
+	{src: 'Songs/Before.mp3' },
+	{src: 'Songs/Never.mp3'}
 ];

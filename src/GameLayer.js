@@ -1,11 +1,19 @@
 var GameLayer = cc.LayerColor.extend({
     init: function() {
-		cc.AudioEngine.getInstance().playMusic( 'Songs/Before.mp3');
+		cc.AudioEngine.getInstance().playMusic( 'Songs/Never.mp3');
         this._super( new cc.Color4B( 127, 127, 127, 255 ) );
         this.setPosition( new cc.Point( 0, 0 ) );
+		this.bg = new InFrame();
+		this.bg.initWithFile('images/Background.jpg');
+		this.bg.setPosition( new cc.Point( 512, 384));
+		this.addChild(this.bg);
 		this.inframe = new InFrame();
 		this.inframe.setPosition( new cc.Point( 512, 384 ) );
 		this.addChild(this.inframe);
+		this.scoreBg = new InFrame();
+		this.scoreBg.initWithFile('images/ScoreBg.png');
+		this.scoreBg.setPosition( new cc.Point( 925, 680));
+		this.addChild(this.scoreBg);
 		this.scoreLabel = cc.LabelTTF.create( 'Score: 0', 'Arial', 30 );
 		this.scoreLabel.setPosition( new cc.Point( 925, 700 ) );
 		this.addChild(this.scoreLabel);
@@ -31,6 +39,8 @@ var GameLayer = cc.LayerColor.extend({
 		this.score = 0;
 		this.combo = 0;
 		this.timer = 0;
+		this.limiter = 35;
+		this.limiterCheck = 0;
 		this.noteRoomCount = 0;
 		this.noteDir = 1;
 		this.note = new Note(this, 1, this.judge[0]);
@@ -45,6 +55,7 @@ var GameLayer = cc.LayerColor.extend({
 	onKeyDown: function( e ) {
 	if ( e == cc.KEY.up || e == cc.KEY.w) {
 		this.noteSet[0].noteCheck(1);
+		console.log('time: '+this.timer);
 	}
 	else if(e == cc.KEY.right || e == cc.KEY.d)
 	{
@@ -62,11 +73,14 @@ var GameLayer = cc.LayerColor.extend({
 	update: function()
 	{
 		this.timer++;
-		if(this.timer == 30 && this.noteRoomCount < 330)
+		if(this.timer == this.limiter && this.noteRoomCount < 420)
 		{
-			this.noteDir = 1+Math.round(Math.random()*3);
+			for(var i = 0; i < 4; i++)
+			{
+				this.judge[i].initWithFile( 'images/EmptyJudge.png' );
+			}
+			this.noteDir = 1 + Math.round(Math.random()*3);
 			this.note = new Note(this, this.noteDir, this.judge[this.noteDir-1]);
-			console.log('Show: ' + this.noteDir);
 			this.note.setPosition( new cc.Point( 512, 384 ) );
 			this.noteSet.push(this.note);
 			this.addChild(this.noteSet[this.noteCount+1]);

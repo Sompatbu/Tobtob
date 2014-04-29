@@ -49,7 +49,7 @@ var Note = cc.Sprite.extend({
 	}
 	else if(this.direction == Note.DIR.DOWN)
 	{
-		if ( pos.y > 30) 
+		if ( pos.y > 40) 
 		{
 			this.setPosition( new cc.Point( pos.x, pos.y - 4) );
 		} 
@@ -104,10 +104,10 @@ var Note = cc.Sprite.extend({
 			this.gameLayer.noteCount--;
 			this.gameLayer.noteSet.shift();
 		}
-		else if(button == 3 && pos.y > 30 && pos.y < 80 && this.isHited == false)
+		else if(button == 3 && pos.y > 40 && pos.y < 90 && this.isHited == false)
 		{
 			this.gameLayer.removeChild(this);
-			this.gameLayer.score += this.judgement.scoring(pos.y - 30);
+			this.gameLayer.score += this.judgement.scoring(pos.y - 40);
 			this.gameLayer.combo++;
 			this.isHited = true;
 			this.gameLayer.scoreLabel.setString('Score: '+this.gameLayer.score);
