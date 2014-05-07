@@ -2,6 +2,7 @@ var g_resources = [
     //image
     {src: 'images/InFrame.png' },
     {src: 'images/SingleNote.png' },
+	{src: 'images/BonusNote.png' },
 	{src: 'images/PerfectJudge.png' },
 	{src: 'images/GreatJudge.png' },
 	{src: 'images/MissJudge.png' },
@@ -10,6 +11,7 @@ var g_resources = [
 	{src: 'images/ScoreBg.png'},
     
 	//song
-	{src: 'Songs/Before.mp3' },
+	//{src: 'Songs/Before.mp3' },
+	{src: 'Songs/Last.mp3'},
 	{src: 'Songs/Never.mp3'}
 ];

@@ -1,7 +1,15 @@
 var Note = cc.Sprite.extend({
-    ctor: function(layer, dir, judge) {
+    ctor: function(layer, dir, judge, bonus) {
         this._super();
-        this.initWithFile( 'images/SingleNote.png' );
+		this.bonusNote = bonus;
+		if(this.bonusNote == true)
+		{
+			this.initWithFile( 'images/BonusNote.png' );
+		}
+		else
+		{
+			this.initWithFile( 'images/SingleNote.png' );
+		}
 		this.gameLayer = layer;
 		this.noteScore = 0;
 		this.isHited = false;
@@ -73,6 +81,11 @@ var Note = cc.Sprite.extend({
 	removeNonActiveNote: function() {
 		var pos = this.getPosition();
 		this.gameLayer.removeChild(this);
+		if(this.gameLayer.maxComboCount < this.gameLayer.combo)
+		{
+			this.gameLayer.maxComboCount = this.gameLayer.combo;
+		}
+		this.gameLayer.missCount++;
 		this.gameLayer.combo = 0;
 		this.gameLayer.comboLabel.setString('Combo: 0');
 		this.gameLayer.noteCount--;
@@ -85,7 +98,7 @@ var Note = cc.Sprite.extend({
 		if(button == 1 && pos.y < screenHeight-30 && pos.y > screenHeight -80 && this.isHited == false)
 		{
 			this.gameLayer.removeChild(this);
-			this.gameLayer.score += this.judgement.scoring(pos.y - (screenHeight - 80));
+			this.gameLayer.score += this.judgement.scoring(pos.y - (screenHeight - 80), this.bonusNote);
 			this.gameLayer.combo++;
 			this.isHited = true;
 			this.gameLayer.scoreLabel.setString('Score: '+this.gameLayer.score);
@@ -96,7 +109,7 @@ var Note = cc.Sprite.extend({
 		else if(button == 2 && pos.x < screenWidth - 170 && pos.x > screenWidth - 220 && this.isHited == false)
 		{
 			this.gameLayer.removeChild(this);
-			this.gameLayer.score += this.judgement.scoring(pos.x - (screenWidth - 220));
+			this.gameLayer.score += this.judgement.scoring(pos.x - (screenWidth - 220), this.bonusNote);
 			this.gameLayer.combo++;
 			this.isHited = true;
 			this.gameLayer.scoreLabel.setString('Score: '+this.gameLayer.score);
@@ -107,7 +120,7 @@ var Note = cc.Sprite.extend({
 		else if(button == 3 && pos.y > 40 && pos.y < 90 && this.isHited == false)
 		{
 			this.gameLayer.removeChild(this);
-			this.gameLayer.score += this.judgement.scoring(pos.y - 40);
+			this.gameLayer.score += this.judgement.scoring(pos.y - 40, this.bonusNote);
 			this.gameLayer.combo++;
 			this.isHited = true;
 			this.gameLayer.scoreLabel.setString('Score: '+this.gameLayer.score);
@@ -118,7 +131,7 @@ var Note = cc.Sprite.extend({
 		else if(button == 4 && pos.x > 170 && pos.x < 220 && this.isHited == false)
 		{
 			this.gameLayer.removeChild(this);
-			this.gameLayer.score += this.judgement.scoring(pos.x -170);
+			this.gameLayer.score += this.judgement.scoring(pos.x -170, this.bonusNote);
 			this.gameLayer.combo++;
 			this.isHited = true;
 			this.gameLayer.scoreLabel.setString('Score: '+this.gameLayer.score);

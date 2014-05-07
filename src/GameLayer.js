@@ -21,21 +21,22 @@ var GameLayer = cc.LayerColor.extend({
 		this.comboLabel.setPosition( new cc.Point( 925, 650 ) );
 		this.addChild(this.comboLabel);
 		this.judge = [];
-		this.judge.push(new Judgement());
+		this.judge.push(new Judgement(this));
 		this.judge[0].setPosition( new cc.Point( 512, 740) );
 		this.addChild(this.judge[0]);
-		this.judge.push(new Judgement());
+		this.judge.push(new Judgement(this));
 		this.judge[1].setPosition( new cc.Point( 860, 400) );
 		this.addChild(this.judge[1]);
-		this.judge.push(new Judgement());
+		this.judge.push(new Judgement(this));
 		this.judge[2].setPosition( new cc.Point( 512, 30) );
 		this.addChild(this.judge[2]);
-		this.judge.push(new Judgement());
+		this.judge.push(new Judgement(this));
 		this.judge[3].setPosition( new cc.Point( 170, 400) );
 		this.addChild(this.judge[3]);
 		this.noteSet = [];
 		this.noteCount = 0;
-		this.notePop = 0;
+		this.musicPlaying = true;
+		this.keyHold = false;
 		this.score = 0;
 		this.combo = 0;
 		this.timer = 0;
@@ -43,7 +44,14 @@ var GameLayer = cc.LayerColor.extend({
 		this.limiterCheck = 0;
 		this.noteRoomCount = 0;
 		this.noteDir = 1;
-		this.note = new Note(this, 1, this.judge[0]);
+		this.noteBonus = false;
+		this.perfectCount = 0;
+		this.greatCount = 0;
+		this.missCount = 0;
+		this.maxComboCount = 0;
+		this.waitTime = 30;
+		this.doubleNote = 0;
+		this.note = new Note(this, 1, this.judge[0], this.noteBonus);
 		this.note.setPosition( new cc.Point( 512, 384 ) );
 		this.noteSet.push(this.note);
 		this.addChild(this.noteSet[this.noteCount]);
@@ -53,22 +61,46 @@ var GameLayer = cc.LayerColor.extend({
         return true;
     },
 	onKeyDown: function( e ) {
-	if ( e == cc.KEY.up || e == cc.KEY.w) {
-		this.noteSet[0].noteCheck(1);
-		console.log('time: '+this.timer);
-	}
-	else if(e == cc.KEY.right || e == cc.KEY.d)
+	if(this.keyHold == false)
 	{
-		this.noteSet[0].noteCheck(2);
-	}
-	else if(e == cc.KEY.down || e == cc.KEY.s)
-	{
-		this.noteSet[0].noteCheck(3);
-	}
-	else if(e == cc.KEY.left || e == cc.KEY.a)
-	{
-		this.noteSet[0].noteCheck(4);
-	}
+		if ( e == cc.KEY.up || e == cc.KEY.w) 
+		{
+			this.keyHold = true;
+			this.noteSet[0].noteCheck(1);
+		}
+		else if(e == cc.KEY.right || e == cc.KEY.d)
+		{
+			this.keyHold = true;
+			this.noteSet[0].noteCheck(2);
+		}
+		else if(e == cc.KEY.down || e == cc.KEY.s)
+		{
+			this.keyHold = true;
+			this.noteSet[0].noteCheck(3);
+		}
+		else if(e == cc.KEY.left || e == cc.KEY.a)
+		{
+			this.keyHold = true;
+			this.noteSet[0].noteCheck(4);
+		}
+	}	
+	if(e == cc.KEY.p)
+		{
+			if(this.musicPlaying == true)
+			{
+				console.log('Fucking pause');
+				cc.AudioEngine.getInstance().pauseMusic();
+				this.musicPlaying = false;
+			}
+			else if(this.musicPlaying == false)
+			{
+				cc.AudioEngine.getInstance().resumeMusic();
+				this.musicPlaying = true;
+			}
+		}
+    },
+	onKeyUp: function( e ) {
+	this.keyHold = false;
     },
 	update: function()
 	{
@@ -80,23 +112,77 @@ var GameLayer = cc.LayerColor.extend({
 				this.judge[i].initWithFile( 'images/EmptyJudge.png' );
 			}
 			this.noteDir = 1 + Math.round(Math.random()*3);
-			this.note = new Note(this, this.noteDir, this.judge[this.noteDir-1]);
+			if(this.noteRoomCount % 20 == 0)
+			{
+				this.noteBonus = true;
+			}
+			else
+			{
+				this.noteBonus = false;
+			}
+			//this.noteDir++;
+			/*if(this.noteDir == 4)
+			{
+				this.noteDir = 0;
+			}*/
+			
+			this.note = new Note(this, this.noteDir, this.judge[this.noteDir-1], this.noteBonus);
 			this.note.setPosition( new cc.Point( 512, 384 ) );
 			this.noteSet.push(this.note);
 			this.addChild(this.noteSet[this.noteCount+1]);
 			this.noteSet[this.noteCount+1].scheduleUpdate();
 			this.scheduleUpdate();
 			this.noteCount++;
-			this.timer = 0;
+			this.timer = 0;	
 			this.noteRoomCount++;
 		}
+		if(this.noteRoomCount == 420)
+		{
+			if(this.timer == this.limiter && this.waitTime != 0)
+			{
+				this.waitTime--;
+			}
+			else
+			{
+				for(var i = 0; i < 4; i++)
+				{
+					this.judge[i].initWithFile( 'images/EmptyJudge.png' );
+				}
+				this.perfectLabel = cc.LabelTTF.create( 'Perfect: ' + this.perfectCount, 'Arial', 30 );
+				this.perfectLabel.setPosition( new cc.Point( 515, 500 ) );
+				this.addChild(this.perfectLabel);
+				this.greatLabel = cc.LabelTTF.create( 'Great: ' + this.greatCount, 'Arial', 30 );
+				this.greatLabel.setPosition( new cc.Point( 515, 450 ) );
+				this.addChild(this.greatLabel);
+				this.missLabel = cc.LabelTTF.create( 'Miss: ' + this.missCount, 'Arial', 30 );
+				this.missLabel.setPosition( new cc.Point( 515, 400 ) );
+				this.addChild(this.missLabel);
+				this.maxComboLabel = cc.LabelTTF.create( 'Max Combo: ' + this.maxComboCount, 'Arial', 30 );
+				this.maxComboLabel.setPosition( new cc.Point( 515, 350 ) );
+				this.addChild(this.maxComboLabel);
+			}
+		}
+	}
+});
+
+var StartMenu = cc.LayerColor.extend({
+	init: function() {
+		this._super( new cc.Color4B( 127, 127, 127, 255 ) );
+		cc.AudioEngine.getInstance().playMusic( 'Songs/Last.mp3');
+		this.setKeyboardEnabled( true );
+	},
+	onKeyDown: function( e ) {
+		console.log('Game Start');
+		var layer = new GameLayer();
+        layer.init();
+        this.addChild( layer );
 	}
 });
 
 var StartScene = cc.Scene.extend({
     onEnter: function() {
         this._super();
-        var layer = new GameLayer();
+        var layer = new StartMenu();
         layer.init();
         this.addChild( layer );
     }

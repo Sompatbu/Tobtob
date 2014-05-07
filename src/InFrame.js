@@ -4,6 +4,5 @@ var InFrame = cc.Sprite.extend({
         this.initWithFile( 'images/InFrame.png' );
     },
 	update: function( dt ) {
-	var pos = this.getPosition();
 }});
 

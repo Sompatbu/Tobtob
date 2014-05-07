@@ -4,6 +4,5 @@ var Song = cc.Sprite.extend({
         this._super();
     },
 	update: function( dt ) {
-	var pos = this.getPosition();
 }});
 
