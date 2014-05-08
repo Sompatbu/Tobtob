@@ -86,25 +86,37 @@ var GameLayer = cc.LayerColor.extend({
 	onKeyDown: function( e ) {
 	if(this.keyHold == false)
 	{
-		if ( e == cc.KEY.up || e == cc.KEY.w) 
+		if(this.noteSet[0].direction == Note.DIR.UP)
 		{
-			this.keyHold = true;
-			this.noteSet[0].noteCheck();
+			if ( e == cc.KEY.up || e == cc.KEY.w) 
+			{
+				this.keyHold = true;
+				this.noteSet[0].noteCheck();
+			}
 		}
-		else if(e == cc.KEY.right || e == cc.KEY.d)
+		else if(this.noteSet[0].direction == Note.DIR.RIGHT)
 		{
-			this.keyHold = true;
-			this.noteSet[0].noteCheck();
+			if(e == cc.KEY.right || e == cc.KEY.d)
+			{
+				this.keyHold = true;
+				this.noteSet[0].noteCheck();
+			}
 		}
-		else if(e == cc.KEY.down || e == cc.KEY.s)
+		else if(this.noteSet[0].direction == Note.DIR.DOWN)
 		{
-			this.keyHold = true;
-			this.noteSet[0].noteCheck();
+			if(e == cc.KEY.down || e == cc.KEY.s)
+			{
+				this.keyHold = true;
+				this.noteSet[0].noteCheck();
+			}
 		}
-		else if(e == cc.KEY.left || e == cc.KEY.a)
+		else if(this.noteSet[0].direction == Note.DIR.LEFT)
 		{
-			this.keyHold = true;
-			this.noteSet[0].noteCheck();
+			if(e == cc.KEY.left || e == cc.KEY.a)
+			{
+				this.keyHold = true;
+				this.noteSet[0].noteCheck();
+			}
 		}
 	}	
     },
@@ -151,14 +163,16 @@ var GameLayer = cc.LayerColor.extend({
 	},
 	ending: function()
 	{
-		if(this.timer == this.limiter && this.waitTime != 0)
+		if(this.timer == this.limiter && this.waitTime > 0)
 		{
 			this.waitTime--;
+			this.timer = 0;
 		}
 		if(this.waitTime == 0)
 		{
 			this.clearJudgement();
 			this.result();
+			this.waitTime--;
 		}
 	},
 	clearJudgement: function()
@@ -187,6 +201,7 @@ var GameLayer = cc.LayerColor.extend({
 
 var StartMenu = cc.LayerColor.extend({
 	init: function() {
+		cc.AudioEngine.getInstance().playMusic( 'Songs/Last.mp3', true);
 		this.started = false;
 		this._super( new cc.Color4B( 255, 255, 255, 0 ) );
 		this.setPosition( new cc.Point( 0, 0 ) );
@@ -198,7 +213,12 @@ var StartMenu = cc.LayerColor.extend({
 		this.pressAnyKey.initWithFile('images/PressAnyKey.png');
 		this.pressAnyKey.setPosition( new cc.Point( 512, 200 ));
 		this.addChild(this.pressAnyKey);
-		cc.AudioEngine.getInstance().playMusic( 'Songs/Last.mp3', true);
+		this.guideLabel = cc.LabelTTF.create( 'Quick Guide: Pressing WASD or Direction Key', 'Arial', 30);
+		this.guideLabel.setPosition( new cc.Point( 512, 420));
+		this.addChild(this.guideLabel);
+		this.guideLabel2 = cc.LabelTTF.create( 'to match up with note direction', 'Arial', 30);
+		this.guideLabel2.setPosition( new cc.Point( 512, 384));
+		this.addChild(this.guideLabel2);
 		this.setKeyboardEnabled( true );
 	},
 	onKeyDown: function( e ) {
