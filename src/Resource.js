@@ -9,6 +9,8 @@ var g_resources = [
 	{src: 'images/EmptyJudge.png' },
 	{src: 'images/Background.jpg'},
 	{src: 'images/ScoreBg.png'},
+	{src: 'images/TobTob.png'},
+	{src: 'images/PressAnyKey.png'},
     
 	//song
 	//{src: 'Songs/Before.mp3' },
